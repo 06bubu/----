@@ -1,1 +1,53 @@
-
+p1868
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 3*1e6+10;
+int n,mx;
+vector<int> arr[N];
+int dp[N];//以i结束最多可以吃到的草
+//dp[i] = dp[i-1] 不选
+//dp[i] = dp[j] + arr[i] 选择
+void solve()
+{
+    cin>>n;
+    for(int i=0;i<n;i++) {
+        int x,y; cin>>x>>y;
+        arr[y].push_back(x-1);
+        mx = max(mx,y);//最大右边界
+    }
+    for(int i=1;i<=mx;i++) {
+        dp[i] = max(dp[i],dp[i-1]);
+        for(int j=0;j<arr[i].size();j++) {
+            int left = arr[i][j];
+            dp[i] = max(dp[i],dp[left]+i-left);
+        }
+    }
+    cout << dp[mx];
+}
+P1280
+#include <bits/stdc++.h>
+using namespace std;
+int n,k;
+vector<int> arr[10010];//以i开始的任务的持续时间
+int dp[10010];//第i分钟起的最大空闲时间
+//if无任务 --> dp[i] = dp[i-1]+1
+//if有任务 --> dp[i] = dp[i+time] time表示当前任务持续时间
+void solve()
+{
+    cin >> n >> k;
+    for(int i=0;i<k;i++) {
+        int x,y;cin>>x>>y;
+        arr[x].push_back(y);
+    }
+    for(int i=n;i;i--) {
+        int k = arr[i].size();
+        if(k > 0) {
+            for(int j=0;j<k;j++) {
+                dp[i] = max(dp[i],dp[i+arr[i][j]]);
+            }
+        } else {
+            dp[i] = dp[i+1]+1;
+        }
+    }
+    cout << dp[1];
+}
